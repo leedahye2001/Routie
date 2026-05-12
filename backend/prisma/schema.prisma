@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────
+// Auth
+// ─────────────────────────────────────────
+
+model User {
+  id        String   @id @default(uuid())
+  email     String?  @unique  // 소셜 전용 유저는 이메일 없을 수 있음
+  nickname  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  authProviders AuthProvider[]
+  refreshTokens RefreshToken[]
+  devices       Device[]
+  groupMembers  GroupMember[]
+  timeBlocks    TimeBlock[]
+  videos        Video[]
+  reactions     Reaction[]
+}
+
+// 로그인 수단 (이메일/구글/애플/카카오)
+model AuthProvider {
+  id         String   @id @default(uuid())
+  provider   Provider
+  providerId String?  // 소셜 provider의 고유 유저 ID
+  password   String?  // LOCAL일 때만 사용 (bcrypt 해시)
+  createdAt  DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@unique([provider, userId])           // 유저당 provider 하나
+  @@unique([provider, providerId])       // provider 내 중복 계정 방지
+}
+
+enum Provider {
+  LOCAL
+  GOOGLE
+  APPLE
+  KAKAO
+}
+
+// Refresh Token (기기별 관리)
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique  // bcrypt 해시 저장
+  deviceId  String            // 기기 고유 ID (클라이언트에서 생성)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@index([userId])
+}
+
+// 기기 등록 (FCM 토큰 기기별 관리)
+model Device {
+  id        String   @id @default(uuid())
+  deviceId  String            // 기기 고유 ID
+  fcmToken  String
+  platform  Platform
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@unique([userId, deviceId])
+}
+
+enum Platform {
+  IOS
+  ANDROID
+}
+
+// ─────────────────────────────────────────
+// Group
+// ─────────────────────────────────────────
+
+model Group {
+  id         String   @id @default(uuid())
+  name       String
+  inviteCode String   @unique @default(uuid())
+  createdAt  DateTime @default(now())
+
+  members GroupMember[]
+}
+
+model GroupMember {
+  id       String   @id @default(uuid())
+  joinedAt DateTime @default(now())
+
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId String
+
+  @@unique([userId, groupId])
+}
+
+// ─────────────────────────────────────────
+// TimeBlock / Video / Reaction
+// ─────────────────────────────────────────
+
+model TimeBlock {
+  id        String   @id @default(uuid())
+  title     String
+  startTime DateTime
+  endTime   DateTime
+  date      DateTime
+  isDone    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  video  Video?
+}
+
+model Video {
+  id         String   @id @default(uuid())
+  s3Key      String
+  s3Url      String
+  uploadedAt DateTime @default(now())
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  timeBlock   TimeBlock @relation(fields: [timeBlockId], references: [id], onDelete: Cascade)
+  timeBlockId String    @unique
+
+  reactions Reaction[]
+}
+
+model Reaction {
+  id        String   @id @default(uuid())
+  emoji     String
+  createdAt DateTime @default(now())
+
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  video   Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  videoId String
+
+  @@unique([userId, videoId, emoji])
+}
