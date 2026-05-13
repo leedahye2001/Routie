@@ -59,6 +59,7 @@ model RefreshToken {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
+  @@unique([userId, deviceId])
   @@index([userId])
 }
 
