@@ -1,0 +1,19 @@
+meta {
+  name: 그룹 참여 (초대코드)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/groups/join/:inviteCode
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+params:path {
+  inviteCode: 초대코드를_여기에_입력
+}

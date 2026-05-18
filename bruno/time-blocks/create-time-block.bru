@@ -1,0 +1,24 @@
+meta {
+  name: 타임블록 생성
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/time-blocks
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "title": "운동",
+    "startTime": "2026-05-18T07:00:00.000Z",
+    "endTime": "2026-05-18T08:00:00.000Z",
+    "date": "2026-05-18T00:00:00.000Z"
+  }
+}

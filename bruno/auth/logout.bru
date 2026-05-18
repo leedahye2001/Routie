@@ -1,0 +1,21 @@
+meta {
+  name: 로그아웃
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/auth/logout
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "deviceId": ""
+  }
+}
