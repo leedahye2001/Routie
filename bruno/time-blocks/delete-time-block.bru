@@ -1,0 +1,19 @@
+meta {
+  name: 타임블록 삭제
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/time-blocks/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+params:path {
+  id: 타임블록ID를_여기에_입력
+}

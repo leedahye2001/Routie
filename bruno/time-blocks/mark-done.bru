@@ -1,0 +1,19 @@
+meta {
+  name: 타임블록 완료 처리
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/time-blocks/:id/done
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+params:path {
+  id: 타임블록ID를_여기에_입력
+}

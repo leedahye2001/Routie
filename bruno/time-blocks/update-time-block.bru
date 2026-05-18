@@ -1,0 +1,25 @@
+meta {
+  name: 타임블록 수정
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseUrl}}/time-blocks/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+params:path {
+  id: 타임블록ID를_여기에_입력
+}
+
+body:json {
+  {
+    "title": "수정된 제목"
+  }
+}

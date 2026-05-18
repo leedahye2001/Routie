@@ -1,0 +1,19 @@
+meta {
+  name: 그룹 상세
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/groups/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+params:path {
+  id: 그룹ID를_여기에_입력
+}
