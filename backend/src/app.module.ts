@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { GroupModule } from './group/group.module';
 import { TimeBlockModule } from './time-block/time-block.module';
 import { VideoModule } from './video/video.module';
+import { ReactionModule } from './reaction/reaction.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { VideoModule } from './video/video.module';
     GroupModule,
     TimeBlockModule,
     VideoModule,
+    ReactionModule,
+    EventsModule,
   ],
 })
 export class AppModule {}
