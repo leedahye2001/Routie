@@ -30,11 +30,11 @@ export class ReactionQueryRepository {
     });
   }
 
-  // 영상 존재 여부 확인
+  // 영상 존재 여부 확인 및 소유자 userId 반환 (실시간 알림 대상 특정 시 사용)
   async findVideo(videoId: string) {
     return this.prisma.video.findUnique({
       where: { id: videoId },
-      select: { id: true },
+      select: { id: true, userId: true },
     });
   }
 }
